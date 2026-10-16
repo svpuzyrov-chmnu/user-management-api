@@ -10,13 +10,17 @@ description = 'user-management-api'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(
+                providers.gradleProperty('javaVersion').getOrElse('25').toInteger()
+        )
     }
 }
 
 repositories {
     mavenCentral()
 }
+
+layout.buildDirectory = layout.projectDirectory.dir("target")
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
