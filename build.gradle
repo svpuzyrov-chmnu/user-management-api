@@ -7,6 +7,9 @@ plugins {
 group = 'com.chmnu.ki_step.security'
 version = '0.0.1-SNAPSHOT'
 description = 'user-management-api'
+ext {
+    lombokVersion = '1.18.48'
+}
 
 java {
     toolchain {
@@ -29,19 +32,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0'
     implementation 'org.mapstruct:mapstruct:1.6.3'
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     //testImplementation 'org.springframework.boot:spring-boot-starter-amqp-test'
     //testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
     //testImplementation 'org.springframework.boot:spring-boot-starter-liquibase-test'
-    testCompileOnly 'org.projectlombok:lombok'
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
 tasks.named('test') {
