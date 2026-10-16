@@ -1,0 +1,11 @@
+server:
+  port: ${SERVER_PORT:18080}
+spring:
+  application:
+    name: user-management-api
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ki-step-2026}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:Qwerty12345}
+    driver-class-name: org.postgresql.Driver
