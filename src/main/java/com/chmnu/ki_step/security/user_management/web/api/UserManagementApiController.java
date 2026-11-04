@@ -29,7 +29,7 @@ public class UserManagementApiController implements UserManagementApi {
 
     @GetMapping(value = "/{id}")
     @Override
-    public UserApiDTO getById(Long id) {
+    public UserApiDTO getById(@PathVariable(name = "id") Long id) {
         return delegate.getById(id);
     }
 }
