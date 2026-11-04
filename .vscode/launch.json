@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "User Application",
+      "type": "java",
+      "request": "launch",
+      "mainClass": "com.chmnu.ki_step.security.user_management.Application",
+      "env": {
+        "DB_HOST": "16.170.148.65",
+        "DB_NAME": "ki-step-2026",
+        "DB_USER": "admin",
+        "DB_PASSWORD":"admin4321"
+      }
+    }
+  ]
+}
