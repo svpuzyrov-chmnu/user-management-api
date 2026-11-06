@@ -87,3 +87,34 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
+
+  publish-source-info:
+    name: Publish source information
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare source information
+        shell: bash
+        env:
+          SOURCE_REF: ${{ github.ref }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p source-info
+
+          printf '%s\n' "$SOURCE_REF" > source-info/ref
+          printf '%s\n' "$SOURCE_SHA" > source-info/sha
+
+          echo "Source ref: $SOURCE_REF"
+          echo "Source SHA: $SOURCE_SHA"
+
+      - name: Upload source information
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-info
+          path: source-info/
+          if-no-files-found: error
+          retention-days: 14
