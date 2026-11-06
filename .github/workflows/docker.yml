@@ -55,7 +55,7 @@ jobs:
 
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
 
-          if [[ "$REF" == "refs/heads/main" ]]; then
+          if [[ "$REF" == "refs/heads/master" ]]; then
             echo "publish_type=latest" >> "$GITHUB_OUTPUT"
 
           elif [[ "$REF" =~ ^refs/tags/v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
