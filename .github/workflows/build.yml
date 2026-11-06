@@ -3,6 +3,10 @@ name: Build
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - "v*"
   pull_request:
 
 permissions:
@@ -19,49 +23,67 @@ jobs:
         java: [17, 21, 25, 26, 27]
 
     steps:
-      - name: Check out repository
+      # Checkout source code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Install selected JDK
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
 
+      # Configure Gradle and dependency caching
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # Compile and run tests
       - name: Build
-        run: ./gradlew build -PjavaVersion=${{ matrix.java }}
+        run: |
+          ./gradlew build \
+            -PjavaVersion=${{ matrix.java }} \
+            --no-daemon
 
-      - name: Prepare application JAR
-        if: matrix.java == 25 && github.event_name == 'push'
+      # Validate executable JAR
+      - name: Validate JAR
+        if: github.event_name == 'push'
         shell: bash
         run: |
-          mkdir -p docker-artifact
+          set -euo pipefail
 
           mapfile -t jars < <(
-            find build/libs \
+            find target/libs \
               -maxdepth 1 \
               -type f \
               -name '*.jar' \
               ! -name '*-plain.jar' \
+              ! -name '*-sources.jar' \
+              ! -name '*-javadoc.jar' \
               | sort
           )
 
           if [ "${#jars[@]}" -ne 1 ]; then
-            echo "Expected exactly one executable JAR"
+            echo "::error::Expected exactly one executable JAR"
             printf '%s\n' "${jars[@]}"
             exit 1
           fi
 
-          cp "${jars[0]}" docker-artifact/application.jar
+          test -s "${jars[0]}"
 
-      - name: Upload application JAR
-        if: matrix.java == 25 && github.event_name == 'push'
+          echo "Executable JAR: ${jars[0]}"
+
+      # Publish JAR using its original filename
+      - name: Upload Java artifact
+        if: github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: application-jar
-          path: docker-artifact/application.jar
+          name: application-java-${{ matrix.java }}
+          path: |
+            target/libs/*.jar
+            !target/libs/*-plain.jar
+            !target/libs/*-sources.jar
+            !target/libs/*-javadoc.jar
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
+          compression-level: 0
